@@ -9,7 +9,7 @@ const dbConnection = async () => {
         console.log('DB online')
     } catch (error) {
         console.log(error);
-        throw new Error('Error al momento de iniciar la aplicación.')
+        throw new Error('The application failed to start because of error.')
     }
 }
 
