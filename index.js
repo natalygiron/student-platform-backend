@@ -22,6 +22,8 @@ app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/students', require('./routes/students'));
 app.use('/api/courses', require('./routes/courses'));
 app.use('/api/login', require('./routes/auth'));
+app.use('/api/todo', require('./routes/searches'));
+app.use('/api/categories', require('./routes/categories'));
 
 
 app.listen( process.env.PORT , () => {

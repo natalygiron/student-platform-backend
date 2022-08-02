@@ -1,47 +1,44 @@
 const { response } = require('express');
 
-const Student = require('../models/student');
+const Category = require("../models/category");
 
-const getStudents = async (req, res) => {
+const getCategories = async (req, res) => {
 
     try {
-        const students = await Student.find()
-                                    .populate('user','firstname')
-                                    .populate('course','name');
+        const category = await Category.find();
         
         res.json({
             ok: true,
-            students
+            category
         });
 
     } catch (error) {
         res.status(500).json({
             ok: false,
-            msg: 'An error has ocurred.'   
+            msg: 'An error has ocurred.' + error  
         });
     }
+
 }
 
-const getStudentById = async ( req, res = response ) => {
+const getCategoryById = async ( req, res = response ) => {
     
     const id = req.params.id;
 
     try {
         
-        const student = await Student.findById(id)
-                                        .populate('user','email')
-                                        .populate('course','name');
+        const category = await Category.findById(id);
         
-        if(!student) {
+        if(!category) {
             return res.status(404).json({
                 ok:true,
-                msg: 'No student found with that id.'
+                msg: 'No category found with that id.'
             })
         }
 
         res.json({
             ok: true,
-            student
+            category
         });
 
     } catch (error) {
@@ -52,21 +49,22 @@ const getStudentById = async ( req, res = response ) => {
     }
 }
 
-const createStudent = async ( req, res = response) => {
+
+const createCategory = async ( req, res = response) => {
 
     const uid = req.uid;
     
     try {
-        const student = new Student({
+        const category = new Category({
             user: uid,
             ...req.body
         })
         
-        const newStudent = await student.save();
+        const newCategory = await category.save();
 
         res.json({
             ok: true,
-            newStudent
+            category: newCategory
         });
 
     } catch (error) {
@@ -77,32 +75,32 @@ const createStudent = async ( req, res = response) => {
     }
 }
 
-const updateStudent = async ( req, res = response ) => {
+const updateCategory = async ( req, res = response ) => {
 
     const id = req.params.id;
     const uid = req.uid;
 
     try {
 
-        const student = await Student.findById(id);
+        const category = await Category.findById(id);
 
-        if(!student) {
+        if(!category) {
             return res.status(404).json({
                 ok:true,
-                msg: 'No student was found with that id.'
+                msg: 'No category was found with that id.'
             })
         }
 
-        const studentChanges = {
+        const categoryChanges = {
             ...req.body,
             usuario: uid,
         }
 
-        const updatedStudent = await Student.findByIdAndUpdate(id, studentChanges, {new: true})
+        const updatedCategory = await Category.findByIdAndUpdate(id, categoryChanges, {new: true})
         
         res.json({
             ok:true,
-            student: updatedStudent
+            category: updatedCategory
         });
 
     } catch (error) {
@@ -114,21 +112,21 @@ const updateStudent = async ( req, res = response ) => {
 
 }
 
-const deleteStudent = async ( req, res = response ) => {
+const deleteCategory = async ( req, res = response ) => {
     const id = req.params.id;
 
     try {
 
-        const student = await Student.findById(id);
+        const category = await Category.findById(id);
 
-        if(!student){
+        if(!category){
             return res.status(404).json({
                 ok: true,
-                msg: 'No student was found with that id.'
+                msg: 'No category was found with that id.'
             })
         }
 
-        await Student.findByIdAndDelete(id);
+        await Category.findByIdAndDelete(id);
 
         res.json({
             ok: true,
@@ -138,15 +136,18 @@ const deleteStudent = async ( req, res = response ) => {
     } catch (error) {
         res.status(500).json({
             ok: false,
-            msg: 'An error has ocurred.'   
+            msg: 'An error has ocurred.' + error
         });
     }
 }
 
 module.exports = {
-    getStudents,
-    createStudent,
-    updateStudent,
-    deleteStudent,
-    getStudentById
+    getCategories,
+    getCategoryById,
+    createCategory,
+    updateCategory,
+    deleteCategory
 }
+
+
+

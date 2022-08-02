@@ -19,7 +19,12 @@ const CourseSchema = Schema({
         type: Schema.Types.ObjectId,
         ref: 'Teacher',
         required: true
-    }
+    },
+    category: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
+    },
 })
 
 CourseSchema.method('toJSON', function(){

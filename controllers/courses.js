@@ -1,4 +1,5 @@
 const { response } = require('express');
+const mongoose = require("mongoose")
 
 const Course = require('../models/course');
 const Student = require('../models/student');
@@ -29,11 +30,13 @@ const createCourse = async ( req, res = response) => {
 
     const uid = req.uid;
     const tid = req.body.teacher;
+    const ctid = req.body.category; //
     
     try {
         const course = new Course({
             user: uid,
             teacher: tid,
+            category: ctid,
             ...req.body
         })
 
@@ -63,6 +66,7 @@ const updateCourse = async ( req, res = response ) => {
     const id = req.params.id;
     const uid = req.uid;
     const tid = req.body.teacher;
+    const ctid = req.body.category;
 
     try {
 
@@ -79,6 +83,7 @@ const updateCourse = async ( req, res = response ) => {
             ...req.body,
             usuario: uid,
             teacher: tid,
+            category: ctid
         }
 
         const updatedCourse = await Course.findByIdAndUpdate(id, courseChanges, {new: true})
@@ -136,16 +141,14 @@ const addCourseToStudent = async ( req, res = response) => {
 
     const id = req.params.id; // course id
     const sid = req.body.student;
-
+    console.log(id);
     try {
-        const getStudent = await Student.findById(sid).populate("course");
+        const existCourse = await Student.findOne({ course: new mongoose.Types.ObjectId(id)})
 
-        const existCourse = await getStudent.course.find(c => c = id)
-        
         if(existCourse){
             return res.status(400).json({
                 ok: false,
-                msg: `The course ${existCourse.name} has this student registered already.`
+                msg: `The course ${getCourse.name} has this student registered already.`
             })
         }
 
@@ -255,12 +258,6 @@ const deleteCourse = async ( req, res = response ) => {
     }
 }
 
-function arrayRemove(arr, value) { 
-    
-    return arr.filter(function(ele){ 
-        return ele != value; 
-    });
-}
 
 module.exports = {
     getCourse,
